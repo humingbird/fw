@@ -1,12 +1,12 @@
 <?php
 
 //autoload
-spl_autoload_register(array('Index','autoload'));
+spl_autoload_register(array('Router','autoload'));
 
 /**
- * 
+ * Controllerクラスを呼び出す
  */
-class Index {
+class Router {
 	function __construct() {
 		$this->index();
 	}

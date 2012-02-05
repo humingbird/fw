@@ -1,6 +1,8 @@
 <?php
+require_once HOME_DIR.'controller/Controller.php';
+
 class IndexController{
 		public function __construct(){
-				echo "testtestettetetetetetetete";
+			$app = new Controller;
 		}
 }
