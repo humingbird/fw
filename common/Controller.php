@@ -1,4 +1,6 @@
 <?php
+require_once'loadconf.php';
+loadconf('web.conf.php');
 
 //autoload
 spl_autoload_register(array('Controller','autoload'));
@@ -12,19 +14,25 @@ class Controller{
 		array_shift($path);
 		array_pop($path);
 		
-		$result = $this->getActionInstance($path);
-
+		//Actionクラスの呼び出し
+		$result = $this->getAction($path);
+		//結果をviewクラスに送る
+		$this->getView($path,$result);
 	}
 	
 	public static function autoload($class){
-		$file = HOME_DIR.'action/'.$class.'.php';
+		if(preg_match('/.*Action$/', $class)){
+			$file = WebConf::$home_dir.'action/'.$class.'.php';
+		}else if(preg_match('/.*View$/', $class)){
+			$file = WebConf::$home_dir.'view/'.$class.'.php';
+		}
 		if(file_exists($file)){
-			require $file;
+			require_once $file;
 		}
 	}
 	
 	//Actionクラスの呼び出し
-	private function getActionInstance($path){
+	private function getAction($path){
 		if(count($path) == 1){
 			$instance = new IndexAction;
 		}else{
@@ -55,5 +63,14 @@ class Controller{
 		return $params;
 	}
 	
-	
+	//Viewの呼び出し
+	private function getView($path,$result){
+		if(count($path) == 1){
+			$instance = new IndexView;
+		}else{
+			$class_name = ucfirst($path[1]).'View';
+			$instance = new $class_name;
+		}
+		$instance->execute($result);
+	}
 }
