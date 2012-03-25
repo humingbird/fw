@@ -1,11 +1,11 @@
 <?php
-require_once'loadconf.php';
+require_once'config/loadconf.php';
 loadconf('web.conf.php');
 
 //autoload
-spl_autoload_register(array('Controller','autoload'));
+spl_autoload_register(array('Router','autoload'));
 
-class Controller{
+class Router{
 	public $log;
 	
 	public function __construct(){
@@ -20,9 +20,13 @@ class Controller{
 	
 	public static function autoload($class){
 		if(preg_match('/.*Action$/', $class)){
-			$file = WebConf::$home_dir.'action/'.$class.'.php';
+			//actionとviewのディレクトリを指定するために取得する
+			$class_name = explode('A',$class);
+			$class_name = strtolower($class_name[0]);
+			
+			$file = WebConf::$home_dir.'application/action/'.$class_name.'/'.$class.'.php';
 		}else if(preg_match('/.*View$/', $class)){
-			$file = WebConf::$home_dir.'view/'.$class.'.php';
+			$file = WebConf::$home_dir.$class.'.php';
 		}
 		if(file_exists($file)){
 			require_once $file;
